@@ -12,3 +12,31 @@ class Person(models.Model):
         verbose_name = 'Работники'
         verbose_name_plural = 'Работники'
         ordering = ['name']
+
+class WorkType(models.Model):
+    work_type = models.CharField(max_length=4, verbose_name='Причина отсутствия')
+
+    def __str__(self):
+        return self.work_type
+
+    class Meta:
+        verbose_name = 'Причина отсутствия на работе'
+        verbose_name_plural = 'Причины отсутствия на работе'
+        ordering = ['work_type']
+
+class Tabel(models.Model):
+    date_work = models.DateField(verbose_name='Дата')
+    master = models.ForeignKey(Person, on_delete = models.CASCADE, verbose_name='Мастер', related_name='master', null=True)
+    person = models.ForeignKey(Person, on_delete = models.CASCADE, verbose_name='Работник', related_name='person')
+    work_time = models.FloatField(verbose_name='Время работы', blank=True, null=True)
+    work_type = models.ForeignKey(WorkType, on_delete=models.CASCADE, verbose_name='Причина отсутствия', blank=True, null=True)
+    work_foreman = models.BooleanField(verbose_name='Производитель', default=False)
+    harmfulness = models.BooleanField(verbose_name='Вредность', default=False)
+    siding = models.BooleanField(verbose_name='Разъезд', default=False)
+    combination = models.FloatField(verbose_name='Совмещение', blank=True, null=True)
+    transferred = models.ForeignKey(Person, on_delete=models.CASCADE, verbose_name='Передан', related_name='transferred', blank=True, null=True)
+
+    class Meta:
+        verbose_name = 'Табель рабочего времени'
+        verbose_name_plural = 'Табель рабочего времени'
+        ordering = ['date_work', 'person']
