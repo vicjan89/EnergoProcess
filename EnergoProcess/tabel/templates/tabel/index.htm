@@ -1,0 +1,10 @@
+{% extends "tabel/base.htm" %}
+
+{% block mainmenu %}
+<nav>
+    <h1>Выберите бригаду для формирования табеля</h1>
+         {% for m in menu %}
+<li><a href="{% url m.pk %}"><div>{{ m.name }}</div></a></li>
+         {% endfor %}
+</nav>
+{% endblock mainmenu %}

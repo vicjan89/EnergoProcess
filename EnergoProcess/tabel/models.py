@@ -6,7 +6,8 @@ class Person(models.Model):
     name = models.CharField(max_length=40, verbose_name='Ф.И.О.')
     position = models.CharField(max_length=40, verbose_name='должность/профессия')
     electrical_safety_group = models.CharField(max_length=3, verbose_name='группа по электробезопасности')
-    subdivision = models.ForeignKey('Subdivision', on_delete = models.CASCADE, verbose_name='Подразделение', blank=True, null=True)
+    subdivision = models.ForeignKey('Subdivision', on_delete = models.CASCADE, verbose_name='Подразделение', blank=True,
+                                    null=True)
 
     def __str__(self):
         return self.name

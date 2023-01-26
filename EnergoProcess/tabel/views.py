@@ -1,16 +1,14 @@
 from django.http import HttpResponse
+from django.template.response import TemplateResponse
+from .models import *
 
 
+menu = Person.objects.filter(position__contains='мастер')
 def index(request):
-    host = request.META["HTTP_HOST"]  # получаем адрес сервера
-    user_agent = request.META["HTTP_USER_AGENT"]  # получаем данные бразера
-    path = request.path  # получаем запрошенный путь
-
-    return HttpResponse(f"""
-            <p>Host: {host}</p>
-            <p>Path: {path}</p>
-            <p>User-agent: {user_agent}</p>
-        """)
+    return TemplateResponse(request,  "tabel/index.htm", {'title': 'Табели бригад', 'menu': menu})
 
 def about(request):
     return HttpResponse("Инструкция по заполнению табеля")
+
+def tabel(request, tabel_id):
+    return HttpResponse("Табель бригады")
