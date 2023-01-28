@@ -2,8 +2,15 @@ from django.contrib import admin
 
 from .models import *
 
+
+class PositionAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+    list_display_links = ('name',)
+
+admin.site.register(Position, PositionAdmin)
+
 class PersonAdmin(admin.ModelAdmin):
-    list_display = ('name', 'position', 'electrical_safety_group')
+    list_display = ('name', 'position', 'electrical_safety_group', 'subdivision')
     list_display_links = ('name',)
     search_fields = ('name',)
 
@@ -25,3 +32,11 @@ class TabelAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Tabel, TabelAdmin)
+
+
+class SubdivisionAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+    list_display_links = ('name',)
+
+
+admin.site.register(Subdivision, SubdivisionAdmin)

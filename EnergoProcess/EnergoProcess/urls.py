@@ -18,8 +18,7 @@ from django.urls import path
 from tabel import views
 
 urlpatterns = [
-    path('<int:tabel_id>/', views.tabel, name='tabel'),
     path('', views.index, name='home'),
     path('admin/', admin.site.urls, name='admin'),
-    path('about', views.about, name='about'),
+    path('tabel/', views.tabel, name='tabel')
 ]
