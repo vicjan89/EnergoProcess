@@ -28,6 +28,21 @@ class Person(models.Model):
         verbose_name_plural = 'Работники'
         ordering = ['name']
 
+class Brigades(models.Model):
+    supervisor = models.ForeignKey(Person, on_delete=models.SET_NULL, verbose_name='руководитель бригады',
+                                   related_name='supervisor', null=True)
+    member = models.ForeignKey(Person, on_delete=models.SET_NULL, verbose_name='член бригады',
+                               related_name='member', null=True)
+
+    def __str__(self):
+        return self.supervisor.name + '-' + self.member.name
+
+    class Meta:
+        verbose_name = 'Состав бригады'
+        verbose_name_plural = 'Состав бригады'
+        ordering = ['supervisor']
+
+
 class WorkType(models.Model):
     work_type = models.CharField(max_length=4, verbose_name='Причина отсутствия')
 

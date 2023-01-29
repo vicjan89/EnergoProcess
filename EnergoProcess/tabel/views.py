@@ -11,5 +11,9 @@ menu = [{'title': 'Как заполнять табели', 'url_name': 'home'},
 def index(request):
     return TemplateResponse(request,  "tabel/index.htm", {'title': 'Главная страница', 'menu': menu})
 
+
+context = {'title': 'Табель бригады',
+           'menu': menu,
+           'brigades': list(set((i.supervisor for i in Brigades.objects.all())))}
 def tabel(request):
-    return TemplateResponse(request,  "tabel/tabel.htm", {'title': 'Табель бригады', 'menu': menu})
+    return TemplateResponse(request,  "tabel/tabel.htm", context=context)

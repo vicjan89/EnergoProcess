@@ -40,3 +40,9 @@ class SubdivisionAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Subdivision, SubdivisionAdmin)
+
+class BrigadesAdmin(admin.ModelAdmin):
+    list_display = ('supervisor', 'member')
+    list_display_links = ('supervisor', 'member')
+
+admin.site.register(Brigades, BrigadesAdmin)
