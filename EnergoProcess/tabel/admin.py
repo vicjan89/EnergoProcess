@@ -24,12 +24,11 @@ admin.site.register(WorkType, WorkTypeAdmin)
 
 
 class TabelRecordAdmin(admin.ModelAdmin):
-    list_display = ('date_work', 'master', 'person', 'work_time', 'work_type', 'work_foreman', 'harmfulness', 'siding', 'combination', 'transferred')
-    # list_display = ('date_work', 'master', 'person', 'work_time', 'work_type', 'work_foreman',
-    #                 'harmfulness', 'siding', 'combination', 'transferred')
-    # list_display_links = ('person',)
-    # search_fields = ('date_work', 'person')
-    # list_filter = ('date_work', 'master', 'person')
+    list_display = ('date_work', 'master', 'person', 'work_time', 'work_type', 'work_foreman',
+                    'harmfulness', 'siding', 'combination', 'transferred')
+    list_display_links = ('date_work', 'master', 'person',)
+    search_fields = ('date_work', 'person')
+    list_filter = ('date_work', 'master', 'person')
 
 admin.site.register(TabelRecord, TabelRecordAdmin)
 

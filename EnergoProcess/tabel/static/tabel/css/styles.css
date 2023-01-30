@@ -65,9 +65,7 @@ ul.list-articles {
 ul.list-articles li {
 	border-bottom: 1px solid #ccc;
 }
-TABLE {
-    border-collapse: collapse; /* Убираем двойные линии между ячейками */
-   }
+
 .table-page {
 	width: 100%;
 	height: 100%;
@@ -161,9 +159,7 @@ div.button {
 	min-height: 100%;
 	height: 100%;
 }
-.table-content td {
-border: 1px solid black;
-}
+
 .left-chapters {
 	margin: 0;
 	background: #eee;
@@ -393,4 +389,10 @@ ul.lang-list li a:hover {color: #fdc073;}
 .form-button {
     min-width: 200px;
     font-size: 16px;
+}
+#table-tabel {
+    border-collapse: collapse; /* Убираем двойные линии между ячейками */
+   }
+#table-tabel td th {
+border: 1px solid black;
 }

@@ -42,11 +42,11 @@ class WorkType(models.Model):
         verbose_name_plural = 'Причины отсутствия на работе'
         ordering = ['work_type']
 
-
+itr = Q(position=Position.objects.get(name='мастер')) | Q(position=Position.objects.get(name='старший мастер'))
 class TabelRecord(models.Model):
     date_work = models.DateField(verbose_name='Дата')
     master = models.ForeignKey(Person, on_delete = models.CASCADE, verbose_name='Мастер', related_name='master',
-                               null=True, limit_choices_to=Q(position=4) | Q(position=3))
+                               null=True, limit_choices_to=itr)
     person = models.ForeignKey(Person, on_delete = models.CASCADE, verbose_name='Работник', related_name='person')
     work_time = models.FloatField(verbose_name='Время работы', blank=True, null=True)
     work_type = models.ForeignKey(WorkType, on_delete=models.CASCADE, verbose_name='Причина отсутствия', blank=True,
@@ -56,10 +56,10 @@ class TabelRecord(models.Model):
     siding = models.BooleanField(verbose_name='Разъезд', default=False)
     combination = models.FloatField(verbose_name='Совмещение', blank=True, null=True)
     transferred = models.ForeignKey(Person, on_delete=models.CASCADE, verbose_name='Передан', related_name='transferred',
-                                    blank=True, null=True, limit_choices_to=Q(position=4) | Q(position=3))
+                                    blank=True, null=True, limit_choices_to=itr)
 
     def __str__(self):
-        return str(self.date_work) + self.person.name + self.work_time + self.work_type
+        return str(self.work_time) if self.work_time else '' + str(self.work_type) if self.work_type else ''
 
     class Meta:
         verbose_name = 'Табель рабочего времени'
@@ -80,11 +80,13 @@ class Subdivision(models.Model):
 
 
 class Brigades(models.Model):
-    supervisor = models.ForeignKey(Person, on_delete=models.SET_NULL, verbose_name='руководитель бригады', related_name='supervisor', blank=True, null=True)
-    member = models.ForeignKey(Person, on_delete=models.SET_NULL, verbose_name='член бригады', related_name='member', blank=True, null=True)
+    supervisor = models.ForeignKey(Person, on_delete=models.SET_NULL, verbose_name='руководитель бригады',
+                                   related_name='supervisor', blank=True, null=True, limit_choices_to=itr)
+    member = models.ForeignKey(Person, on_delete=models.SET_NULL, verbose_name='член бригады', related_name='member',
+                               blank=True, null=True)
 
     def __str__(self):
-        return self.supervisor.name + '-' + self.member.name
+        return self.supervisor.name + ' - ' + self.member.name
 
     class Meta:
         verbose_name = 'Состав бригады'
