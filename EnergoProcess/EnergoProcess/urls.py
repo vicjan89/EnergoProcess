@@ -20,5 +20,6 @@ from tabel import views
 urlpatterns = [
     path('', views.index, name='home'),
     path('admin/', admin.site.urls, name='admin'),
+    path('tabel/<int:brigada_id>/<int:month>/', views.tabel, name='tabel'),
     path('tabel/', views.tabel, name='tabel')
 ]
