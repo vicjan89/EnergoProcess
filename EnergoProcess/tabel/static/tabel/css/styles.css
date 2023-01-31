@@ -393,6 +393,7 @@ ul.lang-list li a:hover {color: #fdc073;}
 #table-tabel {
     border-collapse: collapse; /* Убираем двойные линии между ячейками */
    }
-#table-tabel td th {
+#table-tabel td {
 border: 1px solid black;
+padding: 2px
 }

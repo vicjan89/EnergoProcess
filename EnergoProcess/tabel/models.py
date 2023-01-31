@@ -21,6 +21,7 @@ class Person(models.Model):
     electrical_safety_group = models.CharField(max_length=3, verbose_name='группа по электробезопасности')
     subdivision = models.ForeignKey('Subdivision', on_delete = models.CASCADE, verbose_name='Подразделение', blank=True,
                                     null=True)
+    personnel_number = models.IntegerField(verbose_name='табельный номер', blank=True, null=True)
 
     def __str__(self):
         return self.name

@@ -6,10 +6,20 @@
     <!-- Sidebar слева -->
         <td valign="top" class="left-chapters">
             <ul id="leftchapters">
-            <li class="selected">Бригады</li>
-                {% for m in brigades %}
-                    <li><a href="{% url 'tabel' %}">{{ m.name }}</a></li>
-                {% endfor %}
+                <li>
+                    <form method="post" action="{% url 'tabel' %}">
+                        {% csrf_token %}
+                        <select name="supervisor_id">
+                            {% for m in brigades %}
+                                <option value="{{ m.pk }}" >{{ m.name }}</option>
+                            {% endfor %}
+                            Python
+                        </select>
+                        <p>Год<br> <input name="year" type="number" value="2023" /></p>
+                        <p>Месяц<br> <input name="month" type="number" value="1" /></p>
+                        <input type="submit" value="Вывести" />
+                    </form>
+                </li>
         </ul>
         </td>
         <!-- Конец Sidebar'а -->
@@ -71,9 +81,9 @@
                         </tr>
                         {% for row in tabel %}
                         <tr>
-                            <td rowspan="2"></td>
+                            <td rowspan="2">{{ row.33 }}</td>
                             <td rowspan="2">{{ row.0 }}</td>
-                            <td rowspan="2"></td>
+                            <td rowspan="2">{{ row.32 }}</td>
                             <td>{{ row.1 }}</td>
                             <td>{{ row.2 }}</td>
                             <td>{{ row.3 }}</td>
@@ -90,7 +100,7 @@
                             <td>{{ row.14 }}</td>
                             <td>{{ row.15 }}</td>
                             <td></td>
-                            <td rowspan="2"></td>
+                            <td rowspan="2">{{ row.34 }}</td>
                             <td rowspan="2"></td>
                         </tr>
                         <tr>
@@ -113,6 +123,9 @@
                         </tr>
                         {% endfor %}
                     </table>
+                    Фактический фонд рабочего времени бригады, чел.-час. {{ total }}<br>
+                    Старший мастер (мастер) __________________ {{ supervisor }}<br>
+                    Начальник СРЗАИ ____________________ Януш В.М.
                     </p>
             {% endblock %}
                 </div>
