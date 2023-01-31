@@ -71,7 +71,8 @@ ul.list-articles li {
 	height: 100%;
 	vertical-align: top;
 }
-.table-page tr {height: 100%;}
+.table-page tr {height: 100%;
+    vertical-align: top;}
 
 .clear {clear: both;}
 
@@ -390,10 +391,15 @@ ul.lang-list li a:hover {color: #fdc073;}
     min-width: 200px;
     font-size: 16px;
 }
-#table-tabel {
+
+table#table-tabel {
     border-collapse: collapse; /* Убираем двойные линии между ячейками */
    }
-#table-tabel td {
+
+table#table-tabel td {
 border: 1px solid black;
-padding: 2px
+padding: 2px;
+}
+table th {
+	height: 60px;
 }
