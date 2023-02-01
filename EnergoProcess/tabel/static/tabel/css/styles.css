@@ -205,9 +205,10 @@ div.button {
 }
 
 .content {
-	padding: 40px 20px 20px 40px;
+	padding: 0px 0px 0px 0px;
 	width: 100%;
 	box-sizing: border-box;
+	vertical-align: top;
 }
 
 ul.breadcrumbs {
@@ -263,11 +264,12 @@ ul.content-table li a {
 ul.content-table li a:hover {color: #F0711C;}
 
 .content-text {
-	margin: 60px 0 0 30px;
+	margin: 20px 0 0 20px;
 	color: #000;
 	font-size: 20px;
 	font-family: Yandex Sans Display Light;
 }
+
 .content-text h1 {font-size: 32px;}
 
 ul.lang-list {
@@ -356,7 +358,6 @@ ul.lang-list li a:hover {color: #fdc073;}
 
 #footer {
 	box-sizing: border-box;
-
 	background: #3F4137;
 	padding: 5px;
 	color: #aaa;
@@ -403,3 +404,13 @@ padding: 2px;
 table th {
 	height: 60px;
 }
+
+@media print {
+.left-chapters {display: none;}
+.header {display: none;}
+#footer {display: none;}
+.content-text {
+vertical-align: top; important!
+}
+}
+

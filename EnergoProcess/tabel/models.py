@@ -44,6 +44,7 @@ class WorkType(models.Model):
         ordering = ['work_type']
 
 itr = Q(position=Position.objects.get(name='мастер')) | Q(position=Position.objects.get(name='старший мастер'))
+
 class TabelRecord(models.Model):
     date_work = models.DateField(verbose_name='Дата')
     master = models.ForeignKey(Person, on_delete = models.CASCADE, verbose_name='Мастер', related_name='master',
@@ -60,7 +61,8 @@ class TabelRecord(models.Model):
                                     blank=True, null=True, limit_choices_to=itr)
 
     def __str__(self):
-        return str(self.work_time) if self.work_time else '' + str(self.work_type) if self.work_type else ''
+        out = str(self.date_work) + ' ' +  self.person.name + (str(self.work_time) if self.work_time else '') + (str(self.work_type) if self.work_type != None else '')
+        return out
 
     class Meta:
         verbose_name = 'Табель рабочего времени'

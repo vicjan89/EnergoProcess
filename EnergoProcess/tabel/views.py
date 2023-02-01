@@ -39,7 +39,7 @@ def tabel(request):
             tabel_dict[i.person.name].append(i.person.position)
             tabel_dict[i.person.name].append(i.person.personnel_number)
             tabel_dict[i.person.name].append(0.0)
-        tabel_dict[i.person.name][i.date_work.month] = str(i)
+        tabel_dict[i.person.name][i.date_work.day-1] = (str(i.work_time) if i.work_time else '') + (str(i.work_type) if i.work_type != None else '')
         tabel_dict[i.person.name][33] += i.work_time if i.work_time else 0.0
     for key, value in tabel_dict.items():
         tabel_row =[key]
