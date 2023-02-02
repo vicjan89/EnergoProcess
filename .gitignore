@@ -1,3 +1,4 @@
 venv
 .idea
 Thumbs.db
+/EnergoProcess/static/admin/

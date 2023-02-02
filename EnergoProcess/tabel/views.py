@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from calendar import Calendar
 from django.template.response import TemplateResponse
 from .models import *
 
@@ -21,9 +21,27 @@ month_by_number = {'1': 'январь', '2': 'февраль', '3': 'март', 
 def tabel(request):
     supervisor_id = request.POST.get("supervisor_id", 1)
     month = request.POST.get("month", '1')
+    year = request.POST.get("year", '2023')
     context['month'] = month_by_number[month]
     context['supervisor'] = Person.objects.get(pk=supervisor_id)
     brigada = [i.member for i in Brigades.objects.filter(supervisor=supervisor_id)]
+    master = Person.objects.get(pk=int(supervisor_id))
+    if not TabelRecord.objects.filter(master=supervisor_id).filter(date_work__month=month):
+        mnth = int(month)
+        cal = Calendar()
+        for dt in cal.itermonthdates(year=int(year), month=mnth):
+            work_type = None
+            if dt.month == mnth:
+                if 0 <= dt.weekday() <= 3:
+                    work_time = 8.25
+                elif dt.weekday() == 4:
+                    work_time = 7.0
+                else:
+                    work_time = None
+                    work_type = WorkType.objects.get(work_type='В')
+                for m in brigada:
+                    TabelRecord.objects.create(date_work=dt, master=master, person=m, work_time=work_time,
+                                               work_type=work_type, harmfulness=True)
     tabel_filtred = TabelRecord.objects.filter(master=supervisor_id).filter(date_work__month=month).filter(transferred=None)
     context['tabel'] = []
     tabel_dict = dict()

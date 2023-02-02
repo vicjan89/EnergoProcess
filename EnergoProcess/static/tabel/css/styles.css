@@ -404,6 +404,9 @@ padding: 2px;
 table th {
 	height: 60px;
 }
+table td {
+	height: 14px;
+}
 
 @media print {
 .left-chapters {display: none;}

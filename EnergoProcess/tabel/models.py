@@ -54,7 +54,7 @@ class TabelRecord(models.Model):
     work_type = models.ForeignKey(WorkType, on_delete=models.CASCADE, verbose_name='Причина отсутствия', blank=True,
                                   null=True)
     work_foreman = models.BooleanField(verbose_name='Производитель', default=False)
-    harmfulness = models.BooleanField(verbose_name='Вредность', default=False)
+    harmfulness = models.BooleanField(verbose_name='Вредность', default=True)
     siding = models.BooleanField(verbose_name='Разъезд', default=False)
     combination = models.FloatField(verbose_name='Совмещение', blank=True, null=True)
     transferred = models.ForeignKey(Person, on_delete=models.CASCADE, verbose_name='Передан', related_name='transferred',
