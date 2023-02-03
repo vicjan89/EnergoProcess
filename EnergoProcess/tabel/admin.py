@@ -22,13 +22,20 @@ class WorkTypeAdmin(admin.ModelAdmin):
 
 admin.site.register(WorkType, WorkTypeAdmin)
 
+@admin.action(description='Работник на больничном')
+def make_sick(modeladmin, request, queryset):
+    queryset.update(work_time=None, work_type=WorkType.objects.get(work_type='Б'), work_foreman=False, harmfulness=False,
+                    siding=False, combination=None, transferred=None)
 
 class TabelRecordAdmin(admin.ModelAdmin):
     list_display = ('date_work', 'master', 'person', 'work_time', 'work_type', 'work_foreman',
-                    'harmfulness', 'siding', 'combination', 'transferred')
-    list_display_links = ('date_work', 'master', 'person',)
+                    'harmfulness', 'siding')
+    list_display_links = ('date_work',)
+    list_editable = ('master', 'person', 'work_time', 'work_type', 'work_foreman',
+                    'harmfulness', 'siding')
     search_fields = ('date_work', 'person')
     list_filter = ('date_work', 'master', 'person')
+    actions = [make_sick]
 
 admin.site.register(TabelRecord, TabelRecordAdmin)
 
