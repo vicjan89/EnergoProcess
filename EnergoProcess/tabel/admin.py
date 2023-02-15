@@ -27,6 +27,11 @@ def make_sick(modeladmin, request, queryset):
     queryset.update(work_time=None, work_type=WorkType.objects.get(work_type='Б'), work_foreman=False, harmfulness=False,
                     siding=False, combination=None, transferred=None)
 
+@admin.action(description='Работник в отпуске')
+def make_on_vacation(modeladmin, request, queryset):
+    queryset.update(work_time=None, work_type=WorkType.objects.get(work_type='О'), work_foreman=False, harmfulness=False,
+                    siding=False, combination=None, transferred=None)
+
 class TabelRecordAdmin(admin.ModelAdmin):
     list_display = ('date_work', 'master', 'person', 'work_time', 'work_type', 'work_foreman',
                     'harmfulness', 'siding')
@@ -35,7 +40,13 @@ class TabelRecordAdmin(admin.ModelAdmin):
                     'harmfulness', 'siding')
     search_fields = ('date_work', 'person')
     list_filter = ('date_work', 'master', 'person')
-    actions = [make_sick]
+    actions = [make_sick, make_on_vacation]
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        return qs.filter(master__name__startswith=request.user.get_full_name().split()[1])
 
 admin.site.register(TabelRecord, TabelRecordAdmin)
 
