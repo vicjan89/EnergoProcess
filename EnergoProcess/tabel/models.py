@@ -22,9 +22,12 @@ class Person(models.Model):
     subdivision = models.ForeignKey('Subdivision', on_delete = models.CASCADE, verbose_name='Подразделение', blank=True,
                                     null=True)
     personnel_number = models.IntegerField(verbose_name='табельный номер', blank=True, null=True)
+    time_1234 = models.FloatField(verbose_name='Рабочее время по умолчанию Пн-Чт', blank=True, null=True, default=8.25)
+    time_5 = models.FloatField(verbose_name='Рабочее время по умолчанию Пт', blank=True, null=True, default=7.0)
 
     def __str__(self):
         return self.name
+
 
     class Meta:
         verbose_name = 'Работники'

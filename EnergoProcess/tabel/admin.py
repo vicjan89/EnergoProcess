@@ -10,7 +10,7 @@ class PositionAdmin(admin.ModelAdmin):
 admin.site.register(Position, PositionAdmin)
 
 class PersonAdmin(admin.ModelAdmin):
-    list_display = ('personnel_number', 'name', 'position', 'electrical_safety_group', 'subdivision')
+    list_display = ('personnel_number', 'name', 'position', 'electrical_safety_group', 'subdivision', 'time_1234', 'time_5')
     list_display_links = ('name',)
     search_fields = ('name',)
 

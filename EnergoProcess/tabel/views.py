@@ -32,14 +32,14 @@ def tabel(request):
         for dt in cal.itermonthdates(year=int(year), month=mnth):
             work_type = None
             if dt.month == mnth:
-                if 0 <= dt.weekday() <= 3:
-                    work_time = 8.25
-                elif dt.weekday() == 4:
-                    work_time = 7.0
-                else:
-                    work_time = None
-                    work_type = WorkType.objects.get(work_type='В')
                 for m in brigada:
+                    if 0 <= dt.weekday() <= 3:
+                        work_time = m.time_1234
+                    elif dt.weekday() == 4:
+                        work_time = m.time_5
+                    else:
+                        work_time = None
+                        work_type = WorkType.objects.get(work_type='В')
                     TabelRecord.objects.create(date_work=dt, master=master, person=m, work_time=work_time,
                                                work_type=work_type, harmfulness=True)
     tabel_filtred = TabelRecord.objects.filter(master=supervisor_id).filter(date_work__month=month).filter(transferred=None)

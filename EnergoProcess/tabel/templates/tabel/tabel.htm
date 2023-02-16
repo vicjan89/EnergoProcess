@@ -101,7 +101,7 @@
                             <td>{{ row.14 }}</td>
                             <td>{{ row.15 }}</td>
                             <td></td>
-                            <td rowspan="2">{{ row.34 }}</td>
+                            <td rowspan="2">{{ row.34|floatformat:2 }}</td>
                             <td rowspan="2"></td>
                             <td rowspan="2"></td>
                         </tr>
@@ -125,7 +125,7 @@
                         </tr>
                         {% endfor %}
                     </table>
-                    Фактический фонд рабочего времени бригады, чел.-час. {{ total }}<br>
+                    Фактический фонд рабочего времени бригады, чел.-час. {{ total|floatformat:2 }}<br>
                     {{ supervisor.position|capfirst }} __________________ {{ supervisor }}<br>
                     Начальник СРЗАИ ____________________ Януш Виктор Михайлович
                     </p>
