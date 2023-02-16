@@ -24,6 +24,7 @@ class Person(models.Model):
     personnel_number = models.IntegerField(verbose_name='табельный номер', blank=True, null=True)
     time_1234 = models.FloatField(verbose_name='Рабочее время по умолчанию Пн-Чт', blank=True, null=True, default=8.25)
     time_5 = models.FloatField(verbose_name='Рабочее время по умолчанию Пт', blank=True, null=True, default=7.0)
+    combination_time = models.BooleanField(verbose_name='В табель бригады только совмещение', default=False, blank=True, null=True)
 
     def __str__(self):
         return self.name

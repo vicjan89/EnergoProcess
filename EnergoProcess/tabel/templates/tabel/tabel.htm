@@ -39,28 +39,28 @@
                     установить для членов бригады: {{ supervisor.position }} {{ supervisor.name }}, следующие коэффициенты изменения премии (КИП):
                     <table id="table-tabel">
                         <tr>
-                            <td rowspan="2">Таб.номер</td>
-                            <td rowspan="2">Член бригады</td>
+                            <td style="width: 40px" rowspan="2">Таб. номер</td>
+                            <td style="width: 85px; " rowspan="2">Член бригады</td>
                             <td rowspan="2">Профессия (должность)</td>
-                            <td>1</td>
-                            <td>2</td>
-                            <td>3</td>
-                            <td>4</td>
-                            <td>5</td>
-                            <td>6</td>
-                            <td>7</td>
-                            <td>8</td>
-                            <td>9</td>
-                            <td>10</td>
-                            <td>11</td>
-                            <td>12</td>
-                            <td>13</td>
-                            <td>14</td>
-                            <td>15</td>
-                            <td></td>
-                            <td rowspan="2">Итого</td>
-                            <td rowspan="2">КИП</td>
-                            <td rowspan="2">Примечание</td>
+                            <td id="day">1</td>
+                            <td id="day">2</td>
+                            <td id="day">3</td>
+                            <td id="day">4</td>
+                            <td id="day">5</td>
+                            <td id="day">6</td>
+                            <td id="day">7</td>
+                            <td id="day">8</td>
+                            <td id="day">9</td>
+                            <td id="day">10</td>
+                            <td id="day">11</td>
+                            <td id="day">12</td>
+                            <td id="day">13</td>
+                            <td id="day">14</td>
+                            <td id="day">15</td>
+                            <td id="day"></td>
+                            <td style="width: 45px" rowspan="2">Итого</td>
+                            <td style="width: 35px" rowspan="2">КИП</td>
+                            <td style="width: 60px" rowspan="2">Примечание</td>
                         </tr>
                         <tr>
                             <td>16</td>
@@ -81,9 +81,10 @@
                             <td>31</td>
                         </tr>
                         {% for row in tabel %}
+                        {% if row.34 %}
                         <tr>
                             <td rowspan="2">{{ row.33 }}</td>
-                            <td rowspan="2">{{ row.0 }}</td>
+                            <td rowspan="2">{% if row.35 %}<b>{{ row.0 }}</b>{% else %}{{ row.0 }}{% endif %}</td>
                             <td rowspan="2">{{ row.32 }}</td>
                             <td>{{ row.1 }}</td>
                             <td>{{ row.2 }}</td>
@@ -123,6 +124,7 @@
                             <td>{{ row.30 }}</td>
                             <td>{{ row.31 }}</td>
                         </tr>
+                        {% endif %}
                         {% endfor %}
                     </table>
                     Фактический фонд рабочего времени бригады, чел.-час. {{ total|floatformat:2 }}<br>

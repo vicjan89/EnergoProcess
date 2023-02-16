@@ -51,15 +51,24 @@ def tabel(request):
         tabel_dict[b.name].append(b.position)
         tabel_dict[b.name].append(b.personnel_number)
         tabel_dict[b.name].append(0.0)
+        tabel_dict[b.name].append(True)
     for i in tabel_filtred:
         if i.person.name not in tabel_dict:
             tabel_dict[i.person.name] = [' ' for i in range(31)]
             tabel_dict[i.person.name].append(i.person.position)
             tabel_dict[i.person.name].append(i.person.personnel_number)
             tabel_dict[i.person.name].append(0.0)
-        tabel_dict[i.person.name][i.date_work.day-1] = (str(i.work_time) if i.work_time
-                                                        else '') + ' ' + (str(i.work_type) if i.work_type != None else '')
-        tabel_dict[i.person.name][33] += i.work_time if i.work_time else 0.0
+            tabel_dict[i.person.name].append(False)
+        if i.person.combination_time:
+            work_text = str(i.combination) if i.combination else ''
+            tabel_dict[i.person.name][33] += i.combination if i.combination else 0.0
+        else:
+            work_text = str(i.work_time) if i.work_time else ''
+            tabel_dict[i.person.name][33] += i.work_time if i.work_time else 0.0
+        work_text += ' ' + (str(i.work_type) if i.work_type != None else '')
+        tabel_dict[i.person.name][i.date_work.day-1] = work_text
+
+
     for key, value in tabel_dict.items():
         tabel_row =[key]
         tabel_row.extend(value)

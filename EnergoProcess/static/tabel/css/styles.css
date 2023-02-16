@@ -400,13 +400,13 @@ table#table-tabel {
 table#table-tabel td {
 border: 1px solid black;
 padding: 2px;
+height: 14px;
 }
 table th {
 	height: 60px;
 }
-table td {
-	height: 14px;
-}
+td#day {
+width: 30px}
 
 @media print {
 .left-chapters {display: none;}
@@ -415,5 +415,6 @@ table td {
 .content-text {
 vertical-align: top; important!
 }
+
 }
 
