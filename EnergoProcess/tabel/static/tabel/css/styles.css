@@ -408,6 +408,9 @@ table th {
 td#day {
 width: 30px}
 
+#error {
+color: red;}
+
 @media print {
 .left-chapters {display: none;}
 .header {display: none;}

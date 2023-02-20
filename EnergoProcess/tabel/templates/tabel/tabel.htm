@@ -81,7 +81,7 @@
                             <td>31</td>
                         </tr>
                         {% for row in tabel %}
-                        {% if row.34 %}
+                        {% if row.34 or row.35 %}
                         <tr>
                             <td rowspan="2">{{ row.33 }}</td>
                             <td rowspan="2">{% if row.35 %}<b>{{ row.0 }}</b>{% else %}{{ row.0 }}{% endif %}</td>
@@ -127,6 +127,12 @@
                         {% endif %}
                         {% endfor %}
                     </table>
+                    {% for error in errors.not_enter %}
+                    <div id="error">
+                        {% if error.1 in brigada %}{{ error.0 }} {{ error.1.name }} не внесён в табель{% endif %}
+                    </div>
+                    {% endfor %}
+
                     Фактический фонд рабочего времени бригады, чел.-час. {{ total|floatformat:2 }}<br>
                     {{ supervisor.position|capfirst }} __________________ {{ supervisor }}<br>
                     Начальник СРЗАИ ____________________ Януш Виктор Михайлович
