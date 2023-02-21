@@ -127,9 +127,9 @@
                         {% endif %}
                         {% endfor %}
                     </table>
-                    {% for error in errors.not_enter %}
+                    {% for error in errors %}
                     <div id="error">
-                        {% if error.1 in brigada %}{{ error.0 }} {{ error.1.name }} не внесён в табель{% endif %}
+                        {% if error.2 == supervisor %}{{ error.0 }}{{ error.1.name }}{{ error.3 }}{% endif %}
                     </div>
                     {% endfor %}
 

@@ -13,17 +13,37 @@ def index(request):
 
 
 def check_errors(month: int, year: int):
-    errors = dict()
-    errors['not_enter'] = []
+    errors = []
     tabel_filtred = TabelRecord.objects.filter(date_work__year=year).filter(date_work__month=month).filter(transferred=None)
     records = [(record.date_work, record.person) for record in tabel_filtred]
     workers = Person.objects.all()
+    boss = Person.objects.get(position__name='начальник')
+    not_work_type = [wt for wt in WorkType.objects.all() if wt.work_type in ('О', 'Б', 'А', 'Ук', 'У')]
+    master_for_worker = {i.member.name: i.supervisor for i in Brigades.objects.all()}
     cal = Calendar()
     for dt in cal.itermonthdates(year=year, month=month):
         if dt.month == month:
             for worker in workers:
-                if (dt, worker) not in records:
-                    errors['not_enter'].append((dt, worker))
+                num = records.count((dt, worker))
+                if num == 0:
+                    errors.append((dt, worker, master_for_worker.get(worker.name, boss), ' не внесён в табель'))
+                elif num > 1:
+                    errors.append((dt, worker, master_for_worker.get(worker.name, boss), f' внесён в табель {num} раза'))
+    for record in tabel_filtred:
+        if record.work_type in not_work_type:
+            if record.work_time:
+                errors.append((record.date_work, record.person, record.master, ' установлено рабочее время для отсутствующего работника'))
+            if record.work_foreman:
+                errors.append((record.date_work, record.person, record.master, ' установлена доплата за производителя отсутствующему работнику'))
+            if record.harmfulness:
+                errors.append((record.date_work, record.person, record.master, ' установлена вредность отсутствующему работнику'))
+            if record.siding:
+                errors.append((record.date_work, record.person, record.master, ' установлен разъезд отсутствующему работнику'))
+            if record.transferred:
+                errors.append((record.date_work, record.person, record.master, ' установлено совмещение отсутствующему работнику'))
+        if (record.work_time and ((0 <= record.date_work.weekday() <= 3) and record.work_time < record.person.time_1234 or
+                (record.date_work.weekday() == 4) and record.work_time < record.person.time_5) and record.harmfulness):
+            errors.append((record.date_work, record.person, record.master, ' установлена вредность при неполном рабочем дне'))
 
     return errors
 
