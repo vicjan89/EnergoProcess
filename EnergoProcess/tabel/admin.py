@@ -2,6 +2,7 @@ from django.contrib import admin
 
 from .models import *
 
+admin.site.site_header = 'Табели СРЗАИ'
 
 class PositionAdmin(admin.ModelAdmin):
     list_display = ('name',)
@@ -34,13 +35,16 @@ def make_on_vacation(modeladmin, request, queryset):
 
 class TabelRecordAdmin(admin.ModelAdmin):
     list_display = ('date_work', 'master', 'person', 'work_time', 'work_type', 'work_foreman',
-                    'harmfulness', 'siding')
+                    'harmfulness', 'siding', 'transferred')
     list_display_links = ('date_work',)
     list_editable = ('master', 'person', 'work_time', 'work_type', 'work_foreman',
-                    'harmfulness', 'siding')
+                    'harmfulness', 'siding', 'transferred')
     search_fields = ('date_work', 'person')
     list_filter = ('date_work', 'master', 'person')
     actions = [make_sick, make_on_vacation]
+    save_as = True
+    save_on_top = True
+
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)

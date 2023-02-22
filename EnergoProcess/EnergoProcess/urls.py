@@ -15,11 +15,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+
 from tabel import views
+
 
 urlpatterns = [
     path('', views.index, name='home'),
     path('admin/', admin.site.urls, name='admin'),
-    # path('tabel/<int:supervisor_id>/<int:month>/', views.tabel, name='tabel'),
+    path('tabel_total/', views.tabel_total, name='tabel_total'),
     path('tabel/', views.tabel, name='tabel')
 ]

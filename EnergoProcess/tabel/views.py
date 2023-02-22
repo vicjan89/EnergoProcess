@@ -1,10 +1,14 @@
+import datetime
 from calendar import Calendar
 from django.template.response import TemplateResponse
+from django.views.generic import DetailView
+
 from .models import *
 
 
 menu = [{'title': 'Как заполнять табели', 'url_name': 'home'},
         {'title': 'Табели бригад', 'url_name': 'tabel'},
+        {'title': 'Табель подразделения', 'url_name': 'tabel_total'},
         {'title': 'Редактировать данные', 'url_name': 'admin:index'}
         ]
 def index(request):
@@ -28,7 +32,11 @@ def check_errors(month: int, year: int):
                 if num == 0:
                     errors.append((dt, worker, master_for_worker.get(worker.name, boss), ' не внесён в табель'))
                 elif num > 1:
-                    errors.append((dt, worker, master_for_worker.get(worker.name, boss), f' внесён в табель {num} раза'))
+                    tf = TabelRecord.objects.filter(date_work=dt).filter(person=worker).filter(transferred=None)
+                    text_add = ' '.join(i.master.name for i in tf)
+                    for t in tf:
+                        text = f' внесён в табель {num} раза: ' + text_add
+                        errors.append((dt, worker, t.master, text))
     for record in tabel_filtred:
         if record.work_type in not_work_type:
             if record.work_time:
@@ -47,6 +55,21 @@ def check_errors(month: int, year: int):
 
     return errors
 
+def fill_by_default(person: Person, master: Person, year: int, month: int, tabel_record: TabelRecord, harmfulness):
+    cal = Calendar()
+    work_type_day_off = WorkType.objects.get(work_type='В')
+    for dt in cal.itermonthdates(year=year, month=month):
+        work_type = None
+        if dt.month == month:
+            if 0 <= dt.weekday() <= 3:
+                work_time = person.time_1234
+            elif dt.weekday() == 4:
+                work_time = person.time_5
+            else:
+                work_time = None
+                work_type = work_type_day_off
+            tabel_record.objects.create(date_work=dt, master=master, person=person, work_time=work_time,
+                                       work_type=work_type, harmfulness=harmfulness)
 
 def tabel(request):
     context = {'title': 'Табель бригады',
@@ -58,9 +81,11 @@ def tabel(request):
                        7: 'июль', 8: 'август', 9: 'сентябрь', 10: 'октябрь', 11: 'ноябрь', 12: 'декабрь'}
 
     supervisor_id = request.POST.get("supervisor_id", 1)
-    month = int(request.POST.get("month", '1'))
-    year = int(request.POST.get("year", '2023'))
-    context['month'] = month_by_number[month]
+    month = int(request.POST.get("month", datetime.datetime.now().month))
+    year = int(request.POST.get("year", datetime.datetime.now().year))
+    context['month_name'] = month_by_number[month]
+    context['month'] = month
+    context['year'] = year
     context['supervisor'] = Person.objects.get(pk=supervisor_id)
     brigada = [i.member for i in Brigades.objects.filter(supervisor=supervisor_id)]
     context['brigada'] = brigada
@@ -115,3 +140,68 @@ def tabel(request):
     context['total'] = total
     context['errors'] = check_errors(month, year)
     return TemplateResponse(request, "tabel/tabel.htm", context=context)
+
+def tabel_total(request):
+    context = {'title': 'Табель подразделения',
+               'menu': menu}
+
+    month_by_number = {1: 'январь', 2: 'февраль', 3: 'март', 4: 'апрель', 5: 'май', 6: 'июнь',
+                       7: 'июль', 8: 'август', 9: 'сентябрь', 10: 'октябрь', 11: 'ноябрь', 12: 'декабрь'}
+
+    month = int(request.POST.get("month", datetime.datetime.now().month))
+    year = int(request.POST.get("year", datetime.datetime.now().year))
+    context['month_name'] = month_by_number[month]
+    context['month'] = month
+    context['year'] = year
+    tabel_filtred = TabelRecord.objects.filter(date_work__month=month).filter(transferred=None).filter(person__position__name='начальник')
+    boss = Person.objects.get(position__name='начальник')
+    if not tabel_filtred:
+        fill_by_default(boss, boss, year, month, TabelRecord, False)
+    tabel_filtred = TabelRecord.objects.filter(date_work__month=month).filter(transferred=None).filter(person__position__name='заместитель начальника')
+    if not tabel_filtred:
+        fill_by_default(Person.objects.get(position__name='заместитель начальника'), boss, year, month, TabelRecord, False)
+    tabel_filtred = TabelRecord.objects.filter(date_work__month=month).filter(transferred=None).filter(person__position__name='инженер')
+    if not tabel_filtred:
+        fill_by_default(Person.objects.get(position__name='инженер'), boss, year, month, TabelRecord, False)
+    tabel_filtred = TabelRecord.objects.filter(date_work__month=month).filter(transferred=None).filter(person__position__name='техник (по документации)')
+    if not tabel_filtred:
+        fill_by_default(Person.objects.get(position__name='техник (по документации)'), boss, year, month, TabelRecord, False)
+    tabel_filtred = TabelRecord.objects.filter(date_work__month=month).filter(transferred=None)
+    context['tabel'] = []
+    tabel_dict = dict()
+    total = 0.0
+    workers = Person.objects.all()
+    for worker in workers:
+        tabel_dict[worker.name] = [' ' for i in range(31)]
+        tabel_dict[worker.name].append(worker.position) #31
+        tabel_dict[worker.name].append(worker.personnel_number) #32
+        tabel_dict[worker.name].append(0.0) #33 итого времени
+        tabel_dict[worker.name].append(0.0)  # 34 совмещение
+        tabel_dict[worker.name].append(0)  # 35 разъезды
+    for record in tabel_filtred:
+        work_text = ''
+        if record.work_time:
+            work_text += f'{record.work_time}'
+        if record.work_type:
+            work_text += f'{record.work_type}'
+        if record.combination:
+            work_text += f' ДС{record.combination}'
+        if record.harmfulness and record.work_time:
+            work_text += f' ВР{record.work_time}'
+        if record.siding:
+            work_text += f' ОР'
+        if record.work_foreman:
+            work_text += f' ПВР{record.work_time}'
+        tabel_dict[record.person.name][record.date_work.day-1] = work_text
+        tabel_dict[record.person.name][33] += record.work_time if record.work_time else 0.0
+        tabel_dict[record.person.name][34] += record.combination if record.combination else 0.0
+        tabel_dict[record.person.name][35] += record.siding
+
+    for key, value in tabel_dict.items():
+        tabel_row =[key]
+        tabel_row.extend(value)
+        total += value[33]
+        context['tabel'].append(tabel_row)
+    context['total'] = total
+    context['errors'] = check_errors(month, year)
+    return TemplateResponse(request, "tabel/tabel_total.htm", context=context)

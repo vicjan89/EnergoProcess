@@ -7,14 +7,8 @@
         <td valign="top" class="left-chapters">
             <ul id="leftchapters">
                 <li>
-                    <form method="post" action="{% url 'tabel' %}">
+                    <form method="post" action="{% url 'tabel_total' %}">
                         {% csrf_token %}
-                        <p>Бригада<br><select name="supervisor_id">
-                            {% for m in brigades %}
-                                <option value="{{ m.pk }}" {% if m.pk == supervisor.id %}selected{% endif %}>{{ m.name }}</option>
-                            {% endfor %}
-                            Python
-                        </select><p/>
                         <p>Год<br> <input name="year" type="number" value={{ year }} /></p>
                         <p>Месяц<br> <input name="month" type="number" value={{ month }} /></p>
                         <input type="submit" value="Вывести" />
@@ -31,12 +25,7 @@
             <!-- Блок контента -->
                 <div class="content-text">
             {% block content %}
-                    <p>ПРОТОКОЛ ЗАСЕДАНИЯ ПО ИТОГАМ ФХД<br>
-                    за {{ month_name }} 2023 года<br>
-                    Учитывая личный вклад работников подразделения в финасово-хозяйственный результат деятельности подразделения, допущенные
-                    ими производственные упущения и достинутые производственные успехи,<br>
-                    ПОСТАНОВИЛИ:<br>
-                    установить для членов бригады: {{ supervisor.position }} {{ supervisor.name }}, следующие коэффициенты изменения премии (КИП):
+                    <p>ТАБЕЛЬ СРЗАИ за {{ month_name }} {{ year }} года<br>
                     <table id="table-tabel">
                         <tr>
                             <td style="width: 40px" rowspan="2">Таб. номер</td>
@@ -58,9 +47,9 @@
                             <td id="day">14</td>
                             <td id="day">15</td>
                             <td id="day"></td>
-                            <td style="width: 45px" rowspan="2">Итого</td>
-                            <td style="width: 35px" rowspan="2">КИП</td>
-                            <td style="width: 60px" rowspan="2">Примечание</td>
+                            <td style="width: 45px" rowspan="2">Отработано часов</td>
+                            <td style="width: 35px" rowspan="2">Совмещение</td>
+                            <td style="width: 60px" rowspan="2">Разъезды</td>
                         </tr>
                         <tr>
                             <td>16</td>
@@ -81,10 +70,9 @@
                             <td>31</td>
                         </tr>
                         {% for row in tabel %}
-                        {% if row.34 or row.35 %}
                         <tr>
                             <td rowspan="2">{{ row.33 }}</td>
-                            <td rowspan="2">{% if row.35 %}<b>{{ row.0 }}</b>{% else %}{{ row.0 }}{% endif %}</td>
+                            <td rowspan="2">{{ row.0 }}</td>
                             <td rowspan="2">{{ row.32 }}</td>
                             <td>{{ row.1 }}</td>
                             <td>{{ row.2 }}</td>
@@ -103,8 +91,8 @@
                             <td>{{ row.15 }}</td>
                             <td></td>
                             <td rowspan="2">{{ row.34|floatformat:2 }}</td>
-                            <td rowspan="2"></td>
-                            <td rowspan="2"></td>
+                            <td rowspan="2">{{ row.35|floatformat:2 }}</td>
+                            <td rowspan="2">{{ row.36 }}</td>
                         </tr>
                         <tr>
                             <td>{{ row.16 }}</td>
@@ -124,17 +112,15 @@
                             <td>{{ row.30 }}</td>
                             <td>{{ row.31 }}</td>
                         </tr>
-                        {% endif %}
                         {% endfor %}
                     </table>
                     {% for error in errors %}
                     <div id="error">
-                        {% if error.2 == supervisor %}{{ error.0 }}{{ error.1.name }}{{ error.3 }}{% endif %}
+                        {{ error.0 }}{{ error.1.name }}{{ error.3 }}, руководитель бригады - {{ error.2.name }}
                     </div>
                     {% endfor %}
 
-                    Фактический фонд рабочего времени бригады, чел.-час. {{ total|floatformat:2 }}<br>
-                    {{ supervisor.position|capfirst }} __________________ {{ supervisor }}<br>
+                    Фактический фонд рабочего времени, чел.-час. {{ total|floatformat:2 }}<br>
                     Начальник СРЗАИ ____________________ Януш Виктор Михайлович
                     </p>
             {% endblock %}
