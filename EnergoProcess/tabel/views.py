@@ -173,11 +173,12 @@ def tabel_total(request):
     workers = Person.objects.all()
     for worker in workers:
         tabel_dict[worker.name] = [' ' for i in range(31)]
-        tabel_dict[worker.name].append(worker.position) #31
-        tabel_dict[worker.name].append(worker.personnel_number) #32
-        tabel_dict[worker.name].append(0.0) #33 итого времени
-        tabel_dict[worker.name].append(0.0)  # 34 совмещение
-        tabel_dict[worker.name].append(0)  # 35 разъезды
+        tabel_dict[worker.name].append(worker.position) #32
+        tabel_dict[worker.name].append(worker.personnel_number) #33
+        tabel_dict[worker.name].append(0.0) #34 итого времени
+        tabel_dict[worker.name].append(0)  # 35 итого дней
+        tabel_dict[worker.name].append(0.0)  # 36 совмещение
+        tabel_dict[worker.name].append(0)  # 37 разъезды
     for record in tabel_filtred:
         work_text = ''
         if record.work_time:
@@ -194,8 +195,9 @@ def tabel_total(request):
             work_text += f' ПВР{record.work_time}'
         tabel_dict[record.person.name][record.date_work.day-1] = work_text
         tabel_dict[record.person.name][33] += record.work_time if record.work_time else 0.0
-        tabel_dict[record.person.name][34] += record.combination if record.combination else 0.0
-        tabel_dict[record.person.name][35] += record.siding
+        tabel_dict[record.person.name][34] += 1 if record.work_time else 0
+        tabel_dict[record.person.name][35] += record.combination if record.combination else 0.0
+        tabel_dict[record.person.name][36] += record.siding
 
     for key, value in tabel_dict.items():
         tabel_row =[key]

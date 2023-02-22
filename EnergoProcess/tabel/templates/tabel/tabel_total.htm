@@ -48,6 +48,7 @@
                             <td id="day">15</td>
                             <td id="day"></td>
                             <td style="width: 45px" rowspan="2">Отработано часов</td>
+                            <td style="width: 45px" rowspan="2">Отработано дней</td>
                             <td style="width: 35px" rowspan="2">Совмещение</td>
                             <td style="width: 60px" rowspan="2">Разъезды</td>
                         </tr>
@@ -91,8 +92,9 @@
                             <td>{{ row.15 }}</td>
                             <td></td>
                             <td rowspan="2">{{ row.34|floatformat:2 }}</td>
-                            <td rowspan="2">{{ row.35|floatformat:2 }}</td>
-                            <td rowspan="2">{{ row.36 }}</td>
+                            <td rowspan="2">{{ row.35 }}</td>
+                            <td rowspan="2">{{ row.36|floatformat:2 }}</td>
+                            <td rowspan="2">{{ row.37 }}</td>
                         </tr>
                         <tr>
                             <td>{{ row.16 }}</td>
