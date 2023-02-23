@@ -9,6 +9,7 @@ from .models import *
 menu = [{'title': 'Как заполнять табели', 'url_name': 'home'},
         {'title': 'Табели бригад', 'url_name': 'tabel'},
         {'title': 'Табель подразделения', 'url_name': 'tabel_total'},
+        {'title': 'Табель подразделения списком', 'url_name': 'tabel_list'},
         {'title': 'Редактировать данные', 'url_name': 'admin:index'}
         ]
 def index(request):
@@ -153,20 +154,20 @@ def tabel_total(request):
     context['month_name'] = month_by_number[month]
     context['month'] = month
     context['year'] = year
-    tabel_filtred = TabelRecord.objects.filter(date_work__month=month).filter(transferred=None).filter(person__position__name='начальник')
+    tabel_filtred = TabelRecord.objects.filter(date_work__year=year).filter(date_work__month=month).filter(transferred=None).filter(person__position__name='начальник')
     boss = Person.objects.get(position__name='начальник')
     if not tabel_filtred:
         fill_by_default(boss, boss, year, month, TabelRecord, False)
-    tabel_filtred = TabelRecord.objects.filter(date_work__month=month).filter(transferred=None).filter(person__position__name='заместитель начальника')
+    tabel_filtred = TabelRecord.objects.filter(date_work__year=year).filter(date_work__month=month).filter(transferred=None).filter(person__position__name='заместитель начальника')
     if not tabel_filtred:
         fill_by_default(Person.objects.get(position__name='заместитель начальника'), boss, year, month, TabelRecord, False)
-    tabel_filtred = TabelRecord.objects.filter(date_work__month=month).filter(transferred=None).filter(person__position__name='инженер')
+    tabel_filtred = TabelRecord.objects.filter(date_work__year=year).filter(date_work__month=month).filter(transferred=None).filter(person__position__name='инженер')
     if not tabel_filtred:
         fill_by_default(Person.objects.get(position__name='инженер'), boss, year, month, TabelRecord, False)
-    tabel_filtred = TabelRecord.objects.filter(date_work__month=month).filter(transferred=None).filter(person__position__name='техник (по документации)')
+    tabel_filtred = TabelRecord.objects.filter(date_work__year=year).filter(date_work__month=month).filter(transferred=None).filter(person__position__name='техник (по документации)')
     if not tabel_filtred:
         fill_by_default(Person.objects.get(position__name='техник (по документации)'), boss, year, month, TabelRecord, False)
-    tabel_filtred = TabelRecord.objects.filter(date_work__month=month).filter(transferred=None)
+    tabel_filtred = TabelRecord.objects.filter(date_work__year=year).filter(date_work__month=month).filter(transferred=None)
     context['tabel'] = []
     tabel_dict = dict()
     total = 0.0
@@ -207,3 +208,21 @@ def tabel_total(request):
     context['total'] = total
     context['errors'] = check_errors(month, year)
     return TemplateResponse(request, "tabel/tabel_total.htm", context=context)
+
+def tabel_list(request):
+    context = {'title': 'Табель подразделения списком',
+               'menu': menu}
+
+    month_by_number = {1: 'январь', 2: 'февраль', 3: 'март', 4: 'апрель', 5: 'май', 6: 'июнь',
+                       7: 'июль', 8: 'август', 9: 'сентябрь', 10: 'октябрь', 11: 'ноябрь', 12: 'декабрь'}
+
+    month = int(request.POST.get("month", datetime.datetime.now().month))
+    year = int(request.POST.get("year", datetime.datetime.now().year))
+    context['month_name'] = month_by_number[month]
+    context['month'] = month
+    context['year'] = year
+    context['tabel'] = TabelRecord.objects.filter(date_work__year=year).filter(date_work__month=month).filter(transferred=None)
+    p = Person.objects.all()
+    context['persons_even'] = p[1::2]
+    context['persons_odd'] = p[::2]
+    return TemplateResponse(request, "tabel/tabel_list.htm", context=context)

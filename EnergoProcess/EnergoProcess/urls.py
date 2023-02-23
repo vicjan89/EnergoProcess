@@ -23,5 +23,6 @@ urlpatterns = [
     path('', views.index, name='home'),
     path('admin/', admin.site.urls, name='admin'),
     path('tabel_total/', views.tabel_total, name='tabel_total'),
+    path('tabel_list/', views.tabel_list, name='tabel_list'),
     path('tabel/', views.tabel, name='tabel')
 ]

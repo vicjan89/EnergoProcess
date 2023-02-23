@@ -1,0 +1,98 @@
+{% extends "tabel/base.htm" %}
+
+{% block sidebar %}
+<table class="table-content" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+    <!-- Sidebar слева -->
+        <td valign="top" class="left-chapters">
+            <ul id="leftchapters">
+                <li>
+                    <form method="post" action="{% url 'tabel_list' %}">
+                        {% csrf_token %}
+                        <p>Год<br> <input name="year" type="number" value={{ year }} /></p>
+                        <p>Месяц<br> <input name="month" type="number" value={{ month }} /></p>
+                        <input type="submit" value="Вывести" />
+                    </form>
+                </li>
+            </ul>
+        </td>
+        <!-- Конец Sidebar'а -->
+        <td valign="top" class="content">
+            <!-- Хлебные крошки -->
+            {% block breadcrumbs %}
+            {% endblock %}
+
+            <!-- Блок контента -->
+                <div class="content-text">
+            {% block content %}
+                    <p>ТАБЕЛЬ СРЗАИ за {{ month_name }} {{ year }} года списком<br>
+                        <table>
+                            <tr>
+                                <td>
+                                    {% for p in persons_odd %}
+                                        <p>{{ p.name }}</p>
+                                        <table id="table-tabel">
+                                            <tr>
+                                                <td>Дата</td>
+                                                <td>Время</td>
+                                                <td>Отсут</td>
+                                                <td>Произв</td>
+                                                <td>Вред</td>
+                                                <td>Разъезд</td>
+                                                <td>Совмещ</td>
+                                            </tr>
+                                            {% for row in tabel %}
+                                            {% if row.person == p %}
+                                            <tr>
+                                                <td>{{ row.date_work.day }}</td>
+                                                <td>{% if row.work_time %}{{ row.work_time }}{% endif %}</td>
+                                                <td>{% if row.work_type %}{{ row.work_type }}{% endif %}</td>
+                                                <td>{% if row.work_foreman %}&#10004;{% endif %}</td>
+                                                <td>{% if row.harmfulness %}&#10004;{% endif %}</td>
+                                                <td>{% if row.siding %}&#10004;{% endif %}</td>
+                                                <td>{% if row.combination %}{{ row.combination }}{% endif %}</td>
+                                            </tr>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </table>
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    {% for p in persons_even %}
+                                        <p>{{ p.name }}</p>
+                                        <table id="table-tabel">
+                                            <tr>
+                                                <td>Дата</td>
+                                                <td>Время</td>
+                                                <td>Отсут</td>
+                                                <td>Произв</td>
+                                                <td>Вред</td>
+                                                <td>Разъезд</td>
+                                                <td>Совмещ</td>
+                                            </tr>
+                                            {% for row in tabel %}
+                                            {% if row.person == p %}
+                                            <tr>
+                                                <td>{{ row.date_work.day }}</td>
+                                                <td>{% if row.work_time %}{{ row.work_time }}{% endif %}</td>
+                                                <td>{% if row.work_type %}{{ row.work_type }}{% endif %}</td>
+                                                <td>{% if row.work_foreman %}&#10004;{% endif %}</td>
+                                                <td>{% if row.harmfulness %}&#10004;{% endif %}</td>
+                                                <td>{% if row.siding %}&#10004;{% endif %}</td>
+                                                <td>{% if row.combination %}{{ row.combination }}{% endif %}</td>
+                                            </tr>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </table>
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                        </table>
+                    </p>
+            {% endblock %}
+                </div>
+            <!-- Конец блока контента -->
+        </td>
+    </tr>
+</table>
+{% endblock sidebar %}

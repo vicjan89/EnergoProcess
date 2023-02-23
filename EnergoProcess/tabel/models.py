@@ -51,7 +51,7 @@ itr = Q(position=Position.objects.get(name='мастер')) | Q(position=Positio
 
 class TabelRecord(models.Model):
     date_work = models.DateField(verbose_name='Дата')
-    master = models.ForeignKey(Person, on_delete = models.CASCADE, verbose_name='Мастер', related_name='master',
+    master = models.ForeignKey(Person, on_delete = models.CASCADE, verbose_name='Мастер', related_name='master', blank=True,
                                null=True, limit_choices_to=itr)
     person = models.ForeignKey(Person, on_delete = models.CASCADE, verbose_name='Работник', related_name='person')
     work_time = models.FloatField(verbose_name='Время работы', blank=True, null=True)
