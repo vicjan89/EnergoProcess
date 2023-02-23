@@ -148,7 +148,8 @@ def tabel_total(request):
 
     month_by_number = {1: 'январь', 2: 'февраль', 3: 'март', 4: 'апрель', 5: 'май', 6: 'июнь',
                        7: 'июль', 8: 'август', 9: 'сентябрь', 10: 'октябрь', 11: 'ноябрь', 12: 'декабрь'}
-
+    work_type_A = WorkType.objects.get(work_type='А')
+    work_type_DD = WorkType.objects.get(work_type='ДД')
     month = int(request.POST.get("month", datetime.datetime.now().month))
     year = int(request.POST.get("year", datetime.datetime.now().year))
     context['month_name'] = month_by_number[month]
@@ -180,6 +181,10 @@ def tabel_total(request):
         tabel_dict[worker.name].append(0)  # 35 итого дней
         tabel_dict[worker.name].append(0.0)  # 36 совмещение
         tabel_dict[worker.name].append(0)  # 37 разъезды
+        tabel_dict[worker.name].append(0)  # 38 А
+        tabel_dict[worker.name].append(0)  # 39 Вредность
+        tabel_dict[worker.name].append(0)  # 40 производитель
+        tabel_dict[worker.name].append(0)  # 41 дежурство
     for record in tabel_filtred:
         work_text = ''
         if record.work_time:
@@ -199,6 +204,9 @@ def tabel_total(request):
         tabel_dict[record.person.name][34] += 1 if record.work_time else 0
         tabel_dict[record.person.name][35] += record.combination if record.combination else 0.0
         tabel_dict[record.person.name][36] += record.siding
+        tabel_dict[record.person.name][37] += 1 if record.work_type == work_type_A else 0
+        tabel_dict[record.person.name][38] += record.work_time if record.work_time and record.harmfulness else 0.0
+        tabel_dict[record.person.name][40] += 24 if record.work_type == work_type_DD else 0
 
     for key, value in tabel_dict.items():
         tabel_row =[key]
